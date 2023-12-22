@@ -227,10 +227,17 @@ class QuestionAnsweringModel:
                 else:
                     self.device = torch.device(f"cuda:{cuda_device}")
             else:
-                raise ValueError(
-                    "'use_cuda' set to True when cuda is unavailable."
-                    " Make sure CUDA is available or set use_cuda=False."
-                )
+                try:
+                    import torch_directml
+                except ImportError:
+                    raise ValueError(
+                        "'use_cuda' set to True when cuda is unavailable."
+                        " Make sure CUDA is available or set use_cuda=False."
+                    )
+
+                else:
+                    self.device = torch_directml.device()
+
         else:
             self.device = "cpu"
 
